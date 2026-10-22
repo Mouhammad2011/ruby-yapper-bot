@@ -1,6 +1,9 @@
 {
   "type": "module",
   "main": "bot.js",
+  "dependencies": {
+    "express": "^4.19.2"
+  },
   "scripts": {
     "start": "node bot.js"
   }

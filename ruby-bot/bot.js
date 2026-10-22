@@ -1,13 +1,18 @@
 /**
  * RUBY / JEWEL ALL-IN-ONE YAPPER BOT & BACKEND API ENGINE
- * Built for Render.com Hosting with Dynamic Security Code Auth
+ * Built for Render.com Hosting with Dynamic Security Code Auth & Web Panel
  *
- * Required files in same folder: package.json, yapper.js, bot.js
+ * Required files in same folder: package.json, yapper.js, index.html, ruby-bot.png, bot.js
  */
 
 import express from 'express';
 import crypto from 'crypto';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { Bot, Embed, Row, Button } from './yapper.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // ==========================================
 // CONFIGURATION & ENVIRONMENT SETUP
@@ -19,6 +24,9 @@ const bot = new Bot(BOT_TOKEN);
 const app = express();
 
 app.use(express.json());
+
+// Serve static assets (like index.html, ruby-bot.png, etc.) directly from this folder
+app.use(express.static(__dirname));
 
 // Enable CORS for external frontend panel connections
 app.use((req, res, next) => {
@@ -480,7 +488,18 @@ bot.command('login', 'Generate a secure 6-digit login code for the Control Panel
     expiresAt: Date.now() + 10 * 60 * 1000
   });
 
-  await msg.reply(`🔐 **Ruby Control Panel Security Code**: \`${code}\`\nThis single-use code expires in 10 minutes. Enter it into your Web Control Panel to authenticate.`);
+  try {
+    // Send the security code directly to the user's DMs
+    await bot.dmSend(
+      msg.author_id,
+      `🔐 **Ruby Control Panel Security Code**: \`${code}\`\nThis single-use code expires in 10 minutes. Enter it into your Web Control Panel to authenticate.`
+    );
+    
+    // Reply in the public channel confirming the DM was sent
+    await msg.reply('📬 I sent your 6-digit Control Panel login code to your **DMs**!');
+  } catch (err) {
+    await msg.reply('⚠️ Could not send a DM. Please check your privacy settings and allow DMs from bot members.');
+  }
 });
 
 bot.command('dashboard', 'Get panel URL', (msg) => {
@@ -569,13 +588,9 @@ app.patch('/api/servers/:id/config', authenticateSession, (req, res) => {
   res.json({ success: true, config });
 });
 
-// Server Root Status
+// Root Route: Serve index.html control panel frontend
 app.get('/', (req, res) => {
-  res.json({
-    status: 'online',
-    bot: 'Ruby All-In-One Yapper Service',
-    uptimeSeconds: Math.floor((Date.now() - startTime) / 1000)
-  });
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // Start Express Server

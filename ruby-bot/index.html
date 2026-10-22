@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ruby Bot • Control Panel</title>
+    <!-- Favicon using your asset -->
+    <link rel="icon" type="image/png" href="ruby-bot.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -36,24 +38,14 @@
         .server-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 20px; cursor: pointer; transition: all 0.2s; text-align: center; }
         .server-card:hover { border-color: var(--ruby); transform: translateY(-2px); }
         .toggle-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
-        .status-badge { display: inline-block. width: 8px; height: 8px; border-radius: 50%; background: #10b981; margin-right: 6px; }
+        .status-badge { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #10b981; margin-right: 6px; }
     </style>
 </head>
 <body>
 
     <header>
         <div class="logo-area">
-            <!-- Uses your custom Ruby logo style -->
-            <svg width="40" height="40" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="256" cy="256" r="256" fill="#111827"/>
-                <path d="M256 96L384 224L256 416L128 224L256 96Z" fill="url(#paint0_linear)" stroke="#fb7185" stroke-width="12"/>
-                <defs>
-                    <linearGradient id="paint0_linear" x1="128" y1="96" x2="384" y2="416" gradientUnits="userSpaceOnUse">
-                        <stop stop-color="#f43f5e"/>
-                        <stop offset="1" stop-color="#9f1239"/>
-                    </linearGradient>
-                </defs>
-            </svg>
+            <img src="ruby-bot.png" alt="Ruby Logo">
             <h1>Ruby Panel</h1>
         </div>
         <div id="connectionStatus" style="font-size: 0.875rem; color: var(--text-muted);">
@@ -65,10 +57,13 @@
         <!-- STEP 1: AUTHENTICATION (6-DIGIT CODE) -->
         <div id="authCard" class="card">
             <h2>Connect with Yapper</h2>
-            <p>Type <code>/login</code> in any chat where Ruby is in your server. The bot will DM you a secure 6-digit code.</p>
+            <p>Type <code>/login</code> in any chat where Ruby is in your server. The bot will send a secure 6-digit code directly to your **DMs**.</p>
             <div class="form-group">
                 <label for="codeEntry">6-Digit Security Code</label>
-                <input type="text" id="codeEntry" placeholder="e.g. 482910" maxlength="6">
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="codeEntry" placeholder="e.g. 482910" maxlength="6">
+                    <button type="button" onclick="pasteFromClipboard()" style="width: auto; white-space: nowrap; padding: 0 16px; background: var(--border);">📋 Paste</button>
+                </div>
             </div>
             <button onclick="verifyCode()">Authenticate Panel</button>
             <p id="authError" style="color: #f43f5e; margin-top: 15px; font-size: 0.875rem;"></p>
@@ -112,14 +107,38 @@
     </div>
 
     <script>
-        // CHANGE THIS TO YOUR RENDER URL (without trailing slash)
-        const API_URL = 'https://ruby-yapper-bot.onrender.com';
+        const API_URL = ''; // Direct host origin
         
         let authToken = localStorage.getItem('ruby_token');
         let currentServerId = null;
 
         if (authToken) {
             loadServers();
+        }
+
+        // Auto-Submit when 6 digits are typed or pasted
+        document.getElementById('codeEntry').addEventListener('input', (e) => {
+            const val = e.target.value.replace(/[^0-9]/g, '');
+            e.target.value = val;
+            if (val.length === 6) {
+                verifyCode();
+            }
+        });
+
+        // Paste from clipboard button action
+        async function pasteFromClipboard() {
+            try {
+                const text = await navigator.clipboard.readText();
+                const code = text.replace(/[^0-9]/g, '').trim();
+                if (code.length === 6) {
+                    document.getElementById('codeEntry').value = code;
+                    verifyCode();
+                } else {
+                    alert('Clipboard does not contain a valid 6-digit code.');
+                }
+            } catch (err) {
+                alert('Please allow clipboard permissions or manually type the code.');
+            }
         }
 
         async function verifyCode() {

@@ -3,256 +3,389 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ruby Bot • Control Panel</title>
-    <!-- Favicon using your asset -->
+    <title>Ruby Control Panel</title>
     <link rel="icon" type="image/png" href="ruby-bot.png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #0b0f19;
-            --card-bg: #111827;
-            --border: #1f2937;
+            --bg: #07090e;
+            --card-bg: #0d1118;
+            --card-hover: #131a27;
+            --border: rgba(255, 255, 255, 0.08);
+            --border-hi: rgba(255, 255, 255, 0.16);
+            --text: #f4f6fb;
+            --muted: #8b95ab;
             --ruby: #e11d48;
             --ruby-hover: #f43f5e;
-            --text: #f9fafb;
-            --text-muted: #9ca3af;
+            --ok: #5fd6a0;
+            --warn: #f0b650;
+            --bad: #ff7b86;
+            --font: 'Poppins', sans-serif;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-        body { background-color: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
-        header { display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; border-bottom: 1px solid var(--border); background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(10px); }
-        .logo-area { display: flex; align-items: center; gap: 12px; }
-        .logo-area img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
-        .logo-area h1 { font-size: 1.25rem; font-weight: 700; background: linear-gradient(135deg, #fb7185, #e11d48); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .container { max-width: 900px; margin: 40px auto; padding: 0 20px; width: 100%; flex: 1; }
-        .card { background-color: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 30px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3); }
-        h2 { font-size: 1.5rem; margin-bottom: 10px; }
-        p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 20px; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 8px; color: var(--text-muted); }
-        input, select { width: 100%; padding: 12px 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 1rem; outline: none; transition: border-color 0.2s; }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font); }
+        body { background-color: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; background-image: radial-gradient(52rem 30rem at 50% -9rem, rgba(225, 29, 72, 0.18), transparent 70%); }
+
+        header { display: flex; justify-content: space-between; align-items: center; padding: 14px 28px; border-bottom: 1px solid var(--border); background: rgba(13, 17, 24, 0.8); backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 50; }
+        .brand { display: flex; align-items: center; gap: 12px; }
+        .brand img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; }
+        .brand h1 { font-size: 1.15rem; font-weight: 700; background: linear-gradient(135deg, #fb7185, #e11d48); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        .srv-header-badge { display: flex; align-items: center; gap: 10px; background: rgba(255, 255, 255, 0.03); padding: 6px 14px; border-radius: 999px; border: 1px solid var(--border); }
+        .srv-header-badge img { width: 26px; height: 26px; border-radius: 50%; }
+
+        .user-chip { display: flex; align-items: center; gap: 10px; background: rgba(255, 255, 255, 0.03); padding: 5px 12px; border-radius: 999px; border: 1px solid var(--border); }
+        .user-chip img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
+
+        .container { max-width: 1100px; margin: 24px auto; padding: 0 20px; width: 100%; flex: 1; }
+        .card { background-color: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 24px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); margin-bottom: 20px; }
+
+        .layout-cols { display: grid; grid-template-columns: 220px 1fr; gap: 24px; align-items: start; }
+        .sidebar { display: flex; flex-direction: column; gap: 18px; position: sticky; top: 80px; }
+        .nav-group-title { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 6px; padding-left: 8px; }
+        .nav-link { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 10px; color: var(--muted); font-size: 0.88rem; text-decoration: none; cursor: pointer; transition: all 0.15s; }
+        .nav-link:hover, .nav-link.active { background: rgba(225, 29, 72, 0.12); color: var(--text); font-weight: 600; }
+        .nav-link svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+        .stat-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+        .stat-card b { font-size: 1.5rem; font-weight: 700; display: block; }
+        .stat-card span { font-size: 0.78rem; color: var(--muted); }
+
+        .form-group { margin-bottom: 18px; }
+        label { display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 6px; color: var(--muted); }
+        input, select { width: 100%; padding: 10px 14px; background: rgba(0, 0, 0, 0.3); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.92rem; outline: none; transition: border-color 0.2s; }
         input:focus, select:focus { border-color: var(--ruby); }
-        button { background-color: var(--ruby); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%; transition: background 0.2s; font-size: 1rem; }
+
+        button { background-color: var(--ruby); color: white; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background 0.2s; font-size: 0.9rem; }
         button:hover { background-color: var(--ruby-hover); }
+
+        .status-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: rgba(0, 0, 0, 0.2); border-radius: 10px; margin-bottom: 10px; border: 1px solid var(--border); }
+        .pill { padding: 3px 10px; border-radius: 999px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
+        .pill.on { background: rgba(95, 214, 160, 0.15); color: var(--ok); border: 1px solid rgba(95, 214, 160, 0.3); }
+        .pill.off { background: rgba(255, 123, 134, 0.15); color: var(--bad); border: 1px solid rgba(255, 123, 134, 0.3); }
+
         .hidden { display: none !important; }
-        .server-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin-top: 20px; }
-        .server-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 20px; cursor: pointer; transition: all 0.2s; text-align: center; }
-        .server-card:hover { border-color: var(--ruby); transform: translateY(-2px); }
-        .toggle-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
-        .status-badge { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #10b981; margin-right: 6px; }
+        .server-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; margin-top: 16px; }
+        .server-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 12px; }
+        .server-card:hover { border-color: var(--ruby); transform: translateY(-2px); background: var(--card-hover); }
+        .server-avatar { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, #e11d48, #4c86ff); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo-area">
+        <div class="brand">
             <img src="ruby-bot.png" alt="Ruby Logo">
-            <h1>Ruby Panel</h1>
+            <h1>Ruby Control Panel</h1>
         </div>
-        <div id="connectionStatus" style="font-size: 0.875rem; color: var(--text-muted);">
-            <span class="status-badge"></span>Connected to Backend
+        <div style="display: flex; gap: 12px; align-items: center;">
+            <div id="selectedServerHeader" class="srv-header-badge hidden">
+                <span id="headerServerName" style="font-size: 0.85rem; font-weight: 600;">Server</span>
+            </div>
+            <div id="userHeader" class="hidden">
+                <div class="user-chip">
+                    <img id="userAvatar" src="ruby-bot.png" alt="User">
+                    <span id="userName" style="font-size: 0.85rem; font-weight: 600;">Admin</span>
+                </div>
+            </div>
         </div>
     </header>
 
     <div class="container">
-        <!-- STEP 1: AUTHENTICATION (6-DIGIT CODE) -->
-        <div id="authCard" class="card">
-            <h2>Connect with Yapper</h2>
-            <p>Type <code>/login</code> in any chat where Ruby is in your server. The bot will send a secure 6-digit code directly to your **DMs**.</p>
+        <!-- AUTH CARD -->
+        <div id="authCard" class="card" style="max-width: 480px; margin: 60px auto;">
+            <h2 style="font-size: 1.3rem; margin-bottom: 6px;">Authenticate Session</h2>
+            <p style="color: var(--muted); font-size: 0.85rem; margin-bottom: 18px;">Enter the single-use 6-digit code delivered to your **DMs** via <code>/login</code>.</p>
             <div class="form-group">
-                <label for="codeEntry">6-Digit Security Code</label>
-                <div style="display: flex; gap: 10px;">
+                <label>6-Digit Security Code</label>
+                <div style="display: flex; gap: 8px;">
                     <input type="text" id="codeEntry" placeholder="e.g. 482910" maxlength="6">
-                    <button type="button" onclick="pasteFromClipboard()" style="width: auto; white-space: nowrap; padding: 0 16px; background: var(--border);">📋 Paste</button>
+                    <button type="button" onclick="pasteCode()" style="background: var(--border-hi); white-space: nowrap;">📋 Paste</button>
                 </div>
             </div>
-            <button onclick="verifyCode()">Authenticate Panel</button>
-            <p id="authError" style="color: #f43f5e; margin-top: 15px; font-size: 0.875rem;"></p>
+            <button onclick="verifyCode()" style="width: 100%;">Connect Panel</button>
+            <p id="authError" style="color: var(--bad); margin-top: 12px; font-size: 0.82rem;"></p>
         </div>
 
-        <!-- STEP 2: SERVER SELECTOR -->
+        <!-- SERVER PICKER -->
         <div id="serverCard" class="card hidden">
-            <h2>Select a Server</h2>
-            <p>Choose which server you want to configure with Ruby.</p>
+            <h2 style="font-size: 1.25rem;">Select Your Server</h2>
+            <p style="color: var(--muted); font-size: 0.85rem;">Manage settings, security, and moderation rules across active servers.</p>
             <div id="serverList" class="server-grid"></div>
         </div>
 
-        <!-- STEP 3: DASHBOARD SETTINGS CONFIG -->
-        <div id="dashboardCard" class="card hidden">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <div>
-                    <h2 id="selectedServerName">Server Configuration</h2>
-                    <p style="margin: 0;">Customize moderation, level filters, and modules.</p>
+        <!-- DASHBOARD WORKSPACE -->
+        <div id="dashboardCard" class="hidden">
+            <div class="layout-cols">
+                <!-- SIDEBAR NAV -->
+                <div class="sidebar">
+                    <div>
+                        <div class="nav-group-title">General</div>
+                        <a class="nav-link active" onclick="switchTab('overview', this)">
+                            <svg viewBox="0 0 24 24"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg>
+                            Overview
+                        </a>
+                        <a class="nav-link" onclick="switchTab('identity', this)">
+                            <svg viewBox="0 0 24 24"><path d="M12 4a3 3 0 013 3v4a3 3 0 01-6 0V7a3 3 0 013-3zM6 11a6 6 0 0012 0M12 17v3"/></svg>
+                            Bot Identity
+                        </a>
+                    </div>
+                    <div>
+                        <div class="nav-group-title">Moderation</div>
+                        <a class="nav-link" onclick="switchTab('automod', this)">
+                            <svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/></svg>
+                            AutoMod & Shield
+                        </a>
+                    </div>
+                    <div>
+                        <div class="nav-group-title">Community</div>
+                        <a class="nav-link" onclick="switchTab('welcome', this)">
+                            <svg viewBox="0 0 24 24"><path d="M15 20v-1a4 4 0 00-4-4H7a4 4 0 00-4 4v1M9 11a3.5 3.5 0 100-7 3.5 3.5 0 000 7"/></svg>
+                            Welcome & XP
+                        </a>
+                    </div>
+                    <button onclick="backToServers()" style="background: transparent; border: 1px solid var(--border); color: var(--muted); margin-top: 10px;">Switch Server</button>
                 </div>
-                <button onclick="backToServers()" style="width: auto; padding: 8px 16px; background: transparent; border: 1px solid var(--border);">Switch Server</button>
-            </div>
 
-            <div class="form-group">
-                <label>Bot Display Name in Server</label>
-                <input type="text" id="cfgBotName" value="Ruby">
-            </div>
+                <!-- CONTENT AREA -->
+                <div>
+                    <!-- OVERVIEW TAB -->
+                    <div id="tab-overview" class="tab-content card">
+                        <h2 style="font-size: 1.3rem; margin-bottom: 4px;">Server Overview</h2>
+                        <p style="color: var(--muted); font-size: 0.85rem; margin-bottom: 18px;">Real-time indicators and operational states.</p>
+                        
+                        <div class="stats-grid">
+                            <div class="stat-card"><b id="statMembers">--</b><span>Members</span></div>
+                            <div class="stat-card"><b id="statTickets">--</b><span>Open Tickets</span></div>
+                            <div class="stat-card"><b id="statCases">--</b><span>Cases</span></div>
+                            <div class="stat-card"><b id="statRanked">--</b><span>Ranked</span></div>
+                        </div>
 
-            <div class="toggle-row">
-                <span>AutoMod Filter (Bad Words & Invites)</span>
-                <input type="checkbox" id="cfgAutomod" style="width: 20px; height: 20px; accent-color: var(--ruby);">
-            </div>
+                        <h3 style="font-size: 1rem; margin-bottom: 12px;">Active Service Modules</h3>
+                        <div class="status-row"><span>Raid Shield Protection</span><span id="stShield" class="pill on">Watching</span></div>
+                        <div class="status-row"><span>Support Ticket System</span><span id="stTickets" class="pill on">Active</span></div>
+                        <div class="status-row"><span>Automated XP & Leveling</span><span id="stLevels" class="pill on">Active</span></div>
+                    </div>
 
-            <div class="toggle-row" style="margin-bottom: 20px;">
-                <span>Leveling & XP System</span>
-                <input type="checkbox" id="cfgLevels" style="width: 20px; height: 20px; accent-color: var(--ruby);">
-            </div>
+                    <!-- IDENTITY TAB -->
+                    <div id="tab-identity" class="tab-content card hidden">
+                        <h2 style="font-size: 1.3rem; margin-bottom: 16px;">Bot Identity & Presence</h2>
+                        <div class="form-group">
+                            <label>Bot Display Name</label>
+                            <input type="text" id="botDisplayName" value="Ruby">
+                        </div>
+                        <div class="form-group">
+                            <label>Online Status</label>
+                            <select id="botStatus">
+                                <option value="online">Online</option>
+                                <option value="idle">Idle</option>
+                                <option value="dnd">Do Not Disturb</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Activity Headline</label>
+                            <input type="text" id="botActivity" value="Protecting Server">
+                        </div>
+                        <button onclick="saveBotIdentity()">Save Identity Settings</button>
+                    </div>
 
-            <button onclick="saveConfig()">Save Changes</button>
-            <p id="saveStatus" style="color: #10b981; margin-top: 15px; font-size: 0.875rem; text-align: center;"></p>
+                    <!-- AUTOMOD TAB -->
+                    <div id="tab-automod" class="tab-content card hidden">
+                        <h2 style="font-size: 1.3rem; margin-bottom: 16px;">AutoMod & Raid Shield</h2>
+                        <div class="status-row">
+                            <span>Enable AutoMod Filter</span>
+                            <input type="checkbox" id="cfgAutomodEnabled" style="width: 18px; height: 18px; accent-color: var(--ruby);">
+                        </div>
+                        <div class="status-row" style="margin-bottom: 20px;">
+                            <span>Block External Invite Links</span>
+                            <input type="checkbox" id="cfgAutomodInvites" style="width: 18px; height: 18px; accent-color: var(--ruby);">
+                        </div>
+                        <button onclick="saveConfig()">Save Security Settings</button>
+                    </div>
+
+                    <!-- WELCOME TAB -->
+                    <div id="tab-welcome" class="tab-content card hidden">
+                        <h2 style="font-size: 1.3rem; margin-bottom: 16px;">Welcome & Engagement</h2>
+                        <div class="form-group">
+                            <label>Welcome Messages Channel</label>
+                            <select id="cfgWelcomeChannel"><option value="">-- Disabled --</option></select>
+                        </div>
+                        <div class="status-row" style="margin-bottom: 20px;">
+                            <span>Enable XP Leveling Module</span>
+                            <input type="checkbox" id="cfgLevels" style="width: 18px; height: 18px; accent-color: var(--ruby);">
+                        </div>
+                        <button onclick="saveConfig()">Save Community Settings</button>
+                    </div>
+
+                    <p id="saveStatus" style="color: var(--ok); font-size: 0.85rem; margin-top: 12px; text-align: center;"></p>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        const API_URL = ''; // Direct host origin
-        
+        const API_URL = '';
         let authToken = localStorage.getItem('ruby_token');
         let currentServerId = null;
 
-        if (authToken) {
-            loadServers();
-        }
+        if (authToken) initApp();
 
-        // Auto-Submit when 6 digits are typed or pasted
         document.getElementById('codeEntry').addEventListener('input', (e) => {
             const val = e.target.value.replace(/[^0-9]/g, '');
             e.target.value = val;
-            if (val.length === 6) {
-                verifyCode();
-            }
+            if (val.length === 6) verifyCode();
         });
 
-        // Paste from clipboard button action
-        async function pasteFromClipboard() {
+        async function pasteCode() {
             try {
                 const text = await navigator.clipboard.readText();
                 const code = text.replace(/[^0-9]/g, '').trim();
                 if (code.length === 6) {
                     document.getElementById('codeEntry').value = code;
                     verifyCode();
-                } else {
-                    alert('Clipboard does not contain a valid 6-digit code.');
                 }
-            } catch (err) {
-                alert('Please allow clipboard permissions or manually type the code.');
-            }
+            } catch { alert('Clipboard permissions required.'); }
         }
 
         async function verifyCode() {
             const code = document.getElementById('codeEntry').value.trim();
-            const errorEl = document.getElementById('authError');
-            errorEl.textContent = '';
-
-            if (code.length !== 6) {
-                errorEl.textContent = 'Please enter a valid 6-digit code.';
-                return;
-            }
-
-            try {
-                const res = await fetch(`${API_URL}/api/auth/verify`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ code })
-                });
-                const data = await res.json();
-
-                if (res.ok && data.success) {
-                    authToken = data.token;
-                    localStorage.setItem('ruby_token', authToken);
-                    loadServers();
-                } else {
-                    errorEl.textContent = data.error || 'Authentication failed.';
-                }
-            } catch (err) {
-                errorEl.textContent = 'Could not connect to Render backend.';
+            const res = await fetch(`${API_URL}/api/auth/verify`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code })
+            });
+            const data = await res.json();
+            if (res.ok && data.success) {
+                authToken = data.token;
+                localStorage.setItem('ruby_token', authToken);
+                initApp();
+            } else {
+                document.getElementById('authError').textContent = data.error || 'Authentication failed.';
             }
         }
 
-        async function loadServers() {
+        async function initApp() {
             try {
-                const res = await fetch(`${API_URL}/api/servers`, {
-                    headers: { 'Authorization': `Bearer ${authToken}` }
-                });
-                const data = await res.json();
-
-                if (res.ok) {
-                    document.getElementById('authCard').classList.add('hidden');
-                    document.getElementById('serverCard').classList.remove('hidden');
-                    
-                    const listEl = document.getElementById('serverList');
-                    listEl.innerHTML = '';
-
-                    data.servers.forEach(server => {
-                        const card = document.createElement('div');
-                        card.className = 'server-card';
-                        card.innerHTML = `<h3>${server.name}</h3><p style="font-size: 0.75rem; margin: 5px 0 0 0;">ID: ${server.id}</p>`;
-                        card.onclick = () => selectServer(server.id, server.name);
-                        listEl.appendChild(card);
-                    });
-                } else {
-                    localStorage.removeItem('ruby_token');
-                    document.getElementById('authCard').classList.remove('hidden');
+                const userRes = await fetch(`${API_URL}/api/me`, { headers: { 'Authorization': `Bearer ${authToken}` } });
+                const userData = await userRes.json();
+                if (userRes.ok) {
+                    document.getElementById('userName').textContent = userData.user.display_name || userData.user.username;
+                    document.getElementById('userAvatar').src = userData.user.avatar || 'ruby-bot.png';
+                    document.getElementById('userHeader').classList.remove('hidden');
                 }
-            } catch (err) {
-                console.error(err);
+            } catch {}
+            loadServers();
+        }
+
+        async function loadServers() {
+            const res = await fetch(`${API_URL}/api/servers`, { headers: { 'Authorization': `Bearer ${authToken}` } });
+            const data = await res.json();
+            if (res.ok) {
+                document.getElementById('authCard').classList.add('hidden');
+                document.getElementById('serverCard').classList.remove('hidden');
+                const list = document.getElementById('serverList');
+                list.innerHTML = '';
+                data.servers.forEach(s => {
+                    const card = document.createElement('div');
+                    card.className = 'server-card';
+                    card.innerHTML = `<div class="server-avatar">${s.name.charAt(0)}</div><div><h3 style="font-size: 0.95rem;">${s.name}</h3><span style="font-size: 0.75rem; color: var(--muted);">Active Server</span></div>`;
+                    card.onclick = () => selectServer(s.id, s.name);
+                    list.appendChild(card);
+                });
+            } else {
+                localStorage.removeItem('ruby_token');
+                document.getElementById('authCard').classList.remove('hidden');
             }
         }
 
         async function selectServer(id, name) {
             currentServerId = id;
-            document.getElementById('selectedServerName').textContent = `Configuring: ${name}`;
-            
-            try {
-                const res = await fetch(`${API_URL}/api/servers/${id}/config`, {
-                    headers: { 'Authorization': `Bearer ${authToken}` }
-                });
-                const data = await res.json();
+            document.getElementById('headerServerName').textContent = name;
+            document.getElementById('selectedServerHeader').classList.remove('hidden');
 
-                if (res.ok) {
-                    document.getElementById('cfgBotName').value = data.config.botName || 'Ruby';
-                    document.getElementById('cfgAutomod').checked = data.config.automod?.enabled ?? true;
-                    document.getElementById('cfgLevels').checked = data.config.levelsEnabled ?? true;
-
-                    document.getElementById('serverCard').classList.add('hidden');
-                    document.getElementById('dashboardCard').classList.remove('hidden');
-                }
-            } catch (err) {
-                alert('Failed to load server configuration.');
+            const statsRes = await fetch(`${API_URL}/api/servers/${id}/stats`, { headers: { 'Authorization': `Bearer ${authToken}` } });
+            const stats = await statsRes.json();
+            if (statsRes.ok) {
+                document.getElementById('statMembers').textContent = stats.members;
+                document.getElementById('statTickets').textContent = stats.openTickets;
+                document.getElementById('statCases').textContent = stats.cases;
+                document.getElementById('statRanked').textContent = stats.rankedMembers;
             }
+
+            const chanRes = await fetch(`${API_URL}/api/servers/${id}/channels`, { headers: { 'Authorization': `Bearer ${authToken}` } });
+            const chanData = await chanRes.json();
+            const select = document.getElementById('cfgWelcomeChannel');
+            select.innerHTML = '<option value="">-- Disabled --</option>';
+            (chanData.channels || []).forEach(c => select.innerHTML += `<option value="${c.id}">#${c.name}</option>`);
+
+            const res = await fetch(`${API_URL}/api/servers/${id}/config`, { headers: { 'Authorization': `Bearer ${authToken}` } });
+            const data = await res.json();
+
+            if (res.ok) {
+                document.getElementById('cfgLevels').checked = data.config.levelsEnabled ?? true;
+                document.getElementById('cfgWelcomeChannel').value = data.config.welcomeChannel || '';
+                document.getElementById('cfgAutomodEnabled').checked = data.config.automod?.enabled ?? true;
+                document.getElementById('cfgAutomodInvites').checked = data.config.automod?.invites ?? true;
+
+                document.getElementById('serverCard').classList.add('hidden');
+                document.getElementById('dashboardCard').classList.remove('hidden');
+            }
+        }
+
+        function switchTab(tab, el) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            document.getElementById(`tab-${tab}`).classList.remove('hidden');
+            el.classList.add('active');
         }
 
         async function saveConfig() {
             const updates = {
-                botName: document.getElementById('cfgBotName').value,
-                automod: { enabled: document.getElementById('cfgAutomod').checked },
-                levelsEnabled: document.getElementById('cfgLevels').checked
-            };
-
-            try {
-                const res = await fetch(`${API_URL}/api/servers/${currentServerId}/config`, {
-                    method: 'PATCH',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${authToken}` 
-                    },
-                    body: JSON.stringify(updates)
-                });
-
-                if (res.ok) {
-                    const statusEl = document.getElementById('saveStatus');
-                    statusEl.textContent = '✅ Settings successfully saved and applied to Ruby!';
-                    setTimeout(() => statusEl.textContent = '', 3000);
+                levelsEnabled: document.getElementById('cfgLevels').checked,
+                welcomeChannel: document.getElementById('cfgWelcomeChannel').value,
+                automod: {
+                    enabled: document.getElementById('cfgAutomodEnabled').checked,
+                    invites: document.getElementById('cfgAutomodInvites').checked
                 }
-            } catch (err) {
-                alert('Failed to save settings.');
-            }
+            };
+            const res = await fetch(`${API_URL}/api/servers/${currentServerId}/config`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authToken}` },
+                body: JSON.stringify(updates)
+            });
+            if (res.ok) showStatus('✅ Configurations successfully updated!');
+        }
+
+        async function saveBotIdentity() {
+            const displayName = document.getElementById('botDisplayName').value;
+            const status = document.getElementById('botStatus').value;
+            const activity = document.getElementById('botActivity').value;
+
+            await fetch(`${API_URL}/api/bot/profile`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authToken}` },
+                body: JSON.stringify({ displayName })
+            });
+
+            await fetch(`${API_URL}/api/bot/status`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authToken}` },
+                body: JSON.stringify({ status, activity })
+            });
+
+            showStatus('💎 Identity updated successfully!');
+        }
+
+        function showStatus(msg) {
+            const statusEl = document.getElementById('saveStatus');
+            statusEl.textContent = msg;
+            setTimeout(() => statusEl.textContent = '', 3000);
         }
 
         function backToServers() {
             document.getElementById('dashboardCard').classList.add('hidden');
+            document.getElementById('selectedServerHeader').classList.add('hidden');
             document.getElementById('serverCard').classList.remove('hidden');
         }
     </script>

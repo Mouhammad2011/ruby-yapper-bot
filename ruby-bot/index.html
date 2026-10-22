@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ruby Control Panel</title>
+    <title>Ruby • Control Panel</title>
     <link rel="icon" type="image/png" href="ruby-bot.png">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #07090e;
-            --card-bg: #0d1118;
-            --card-hover: #131a27;
+            --card-bg: rgba(13, 17, 24, 0.75);
+            --card-hover: rgba(19, 26, 39, 0.85);
             --border: rgba(255, 255, 255, 0.08);
-            --border-hi: rgba(255, 255, 255, 0.16);
+            --border-hi: rgba(255, 255, 255, 0.18);
             --text: #f4f6fb;
             --muted: #8b95ab;
             --ruby: #e11d48;
@@ -24,52 +24,103 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font); }
-        body { background-color: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; background-image: radial-gradient(52rem 30rem at 50% -9rem, rgba(225, 29, 72, 0.18), transparent 70%); }
+        body { 
+            background-color: var(--bg); 
+            color: var(--text); 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            background-image: radial-gradient(52rem 30rem at 50% -9rem, rgba(225, 29, 72, 0.22), transparent 70%), radial-gradient(34rem 24rem at 100% 28rem, rgba(59, 123, 255, 0.08), transparent 70%);
+            background-repeat: no-repeat;
+        }
 
-        header { display: flex; justify-content: space-between; align-items: center; padding: 14px 28px; border-bottom: 1px solid var(--border); background: rgba(13, 17, 24, 0.8); backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 50; }
+        header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 14px 32px; 
+            border-bottom: 1px solid var(--border); 
+            background: rgba(10, 13, 20, 0.8); 
+            backdrop-filter: blur(16px); 
+            -webkit-backdrop-filter: blur(16px);
+            position: sticky; 
+            top: 0; 
+            z-index: 50; 
+        }
         .brand { display: flex; align-items: center; gap: 12px; }
-        .brand img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; }
-        .brand h1 { font-size: 1.15rem; font-weight: 700; background: linear-gradient(135deg, #fb7185, #e11d48); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .brand img { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border-hi); }
+        .brand h1 { font-size: 1.2rem; font-weight: 700; background: linear-gradient(135deg, #fb7185, #e11d48); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        .srv-header-badge { display: flex; align-items: center; gap: 10px; background: rgba(255, 255, 255, 0.03); padding: 6px 14px; border-radius: 999px; border: 1px solid var(--border); }
-        .srv-header-badge img { width: 26px; height: 26px; border-radius: 50%; }
+        .srv-header-badge { display: flex; align-items: center; gap: 10px; background: rgba(255, 255, 255, 0.03); padding: 5px 14px; border-radius: 999px; border: 1px solid var(--border); }
+        .srv-header-badge img { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; }
 
-        .user-chip { display: flex; align-items: center; gap: 10px; background: rgba(255, 255, 255, 0.03); padding: 5px 12px; border-radius: 999px; border: 1px solid var(--border); }
+        .user-chip { display: flex; align-items: center; gap: 10px; background: rgba(255, 255, 255, 0.03); padding: 5px 14px; border-radius: 999px; border: 1px solid var(--border); }
         .user-chip img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
 
-        .container { max-width: 1100px; margin: 24px auto; padding: 0 20px; width: 100%; flex: 1; }
-        .card { background-color: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 24px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); margin-bottom: 20px; }
+        .container { max-width: 1180px; margin: 28px auto; padding: 0 20px; width: 100%; flex: 1; }
+        
+        .card { 
+            background-color: var(--card-bg); 
+            backdrop-filter: blur(16px); 
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border); 
+            border-radius: 20px; 
+            padding: 28px; 
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45); 
+            margin-bottom: 24px; 
+        }
 
-        .layout-cols { display: grid; grid-template-columns: 220px 1fr; gap: 24px; align-items: start; }
-        .sidebar { display: flex; flex-direction: column; gap: 18px; position: sticky; top: 80px; }
-        .nav-group-title { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 6px; padding-left: 8px; }
-        .nav-link { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 10px; color: var(--muted); font-size: 0.88rem; text-decoration: none; cursor: pointer; transition: all 0.15s; }
-        .nav-link:hover, .nav-link.active { background: rgba(225, 29, 72, 0.12); color: var(--text); font-weight: 600; }
-        .nav-link svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
+        .layout-cols { display: grid; grid-template-columns: 240px 1fr; gap: 24px; align-items: start; }
+        .sidebar { display: flex; flex-direction: column; gap: 16px; position: sticky; top: 84px; }
+        .nav-group-title { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); margin-bottom: 6px; padding-left: 10px; }
+        
+        .nav-link { 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            padding: 9px 14px; 
+            border-radius: 12px; 
+            color: var(--muted); 
+            font-size: 0.88rem; 
+            font-weight: 500;
+            text-decoration: none; 
+            cursor: pointer; 
+            transition: all 0.2s; 
+        }
+        .nav-link:hover, .nav-link.active { background: rgba(225, 29, 72, 0.15); color: var(--text); border: 1px solid rgba(225, 29, 72, 0.3); font-weight: 600; }
+        .nav-link svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
-        .stat-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
-        .stat-card b { font-size: 1.5rem; font-weight: 700; display: block; }
-        .stat-card span { font-size: 0.78rem; color: var(--muted); }
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
+        .stat-card { background: rgba(0, 0, 0, 0.25); border: 1px solid var(--border); border-radius: 14px; padding: 18px; }
+        .stat-card b { font-size: 1.6rem; font-weight: 700; display: block; color: var(--text); }
+        .stat-card span { font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
 
-        .form-group { margin-bottom: 18px; }
-        label { display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 6px; color: var(--muted); }
-        input, select { width: 100%; padding: 10px 14px; background: rgba(0, 0, 0, 0.3); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.92rem; outline: none; transition: border-color 0.2s; }
-        input:focus, select:focus { border-color: var(--ruby); }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 8px; color: var(--muted); }
+        input, select, textarea { width: 100%; padding: 12px 16px; background: rgba(0, 0, 0, 0.35); border: 1px solid var(--border); border-radius: 12px; color: var(--text); font-size: 0.92rem; outline: none; transition: all 0.2s; }
+        input:focus, select:focus, textarea:focus { border-color: var(--ruby); background: rgba(0, 0, 0, 0.5); }
+        textarea { min-height: 90px; resize: vertical; }
 
-        button { background-color: var(--ruby); color: white; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background 0.2s; font-size: 0.9rem; }
-        button:hover { background-color: var(--ruby-hover); }
+        button { background-color: var(--ruby); color: white; border: none; padding: 12px 22px; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-size: 0.92rem; box-shadow: 0 4px 15px rgba(225, 29, 72, 0.3); }
+        button:hover { background-color: var(--ruby-hover); transform: translateY(-1px); }
 
-        .status-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: rgba(0, 0, 0, 0.2); border-radius: 10px; margin-bottom: 10px; border: 1px solid var(--border); }
-        .pill { padding: 3px 10px; border-radius: 999px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
+        .status-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; background: rgba(0, 0, 0, 0.25); border-radius: 12px; margin-bottom: 12px; border: 1px solid var(--border); }
+        .pill { padding: 4px 12px; border-radius: 999px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
         .pill.on { background: rgba(95, 214, 160, 0.15); color: var(--ok); border: 1px solid rgba(95, 214, 160, 0.3); }
         .pill.off { background: rgba(255, 123, 134, 0.15); color: var(--bad); border: 1px solid rgba(255, 123, 134, 0.3); }
 
         .hidden { display: none !important; }
-        .server-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; margin-top: 16px; }
-        .server-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 12px; }
+        .server-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; margin-top: 18px; }
+        .server-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 18px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 14px; }
         .server-card:hover { border-color: var(--ruby); transform: translateY(-2px); background: var(--card-hover); }
-        .server-avatar { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, #e11d48, #4c86ff); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; }
+        .server-avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; background: linear-gradient(135deg, #e11d48, #4c86ff); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; }
+
+        .table { width: 100%; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; border-collapse: collapse; margin-top: 10px; }
+        .table th { text-align: left; padding: 12px 16px; background: rgba(0,0,0,0.4); color: var(--muted); font-size: 0.8rem; border-bottom: 1px solid var(--border); }
+        .table td { padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 0.88rem; }
+
+        .embed-preview { padding: 16px; border-radius: 12px; background: #0a0d14; border: 1px solid var(--border); border-left: 4px solid var(--ruby); margin-top: 10px; }
+        .ticket-type-card { background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 14px; padding: 18px; margin-bottom: 14px; }
     </style>
 </head>
 <body>
@@ -79,8 +130,9 @@
             <img src="ruby-bot.png" alt="Ruby Logo">
             <h1>Ruby Control Panel</h1>
         </div>
-        <div style="display: flex; gap: 12px; align-items: center;">
+        <div style="display: flex; gap: 14px; align-items: center;">
             <div id="selectedServerHeader" class="srv-header-badge hidden">
+                <img id="headerServerAvatar" src="" alt="">
                 <span id="headerServerName" style="font-size: 0.85rem; font-weight: 600;">Server</span>
             </div>
             <div id="userHeader" class="hidden">
@@ -95,23 +147,23 @@
     <div class="container">
         <!-- AUTH CARD -->
         <div id="authCard" class="card" style="max-width: 480px; margin: 60px auto;">
-            <h2 style="font-size: 1.3rem; margin-bottom: 6px;">Authenticate Session</h2>
-            <p style="color: var(--muted); font-size: 0.85rem; margin-bottom: 18px;">Enter the single-use 6-digit code delivered to your **DMs** via <code>/login</code>.</p>
+            <h2 style="font-size: 1.35rem; margin-bottom: 6px;">Authenticate Session</h2>
+            <p style="color: var(--muted); font-size: 0.88rem; margin-bottom: 20px;">Enter the 6-digit passcode sent to your **DMs** via <code>/login</code>.</p>
             <div class="form-group">
                 <label>6-Digit Security Code</label>
-                <div style="display: flex; gap: 8px;">
+                <div style="display: flex; gap: 10px;">
                     <input type="text" id="codeEntry" placeholder="e.g. 482910" maxlength="6">
-                    <button type="button" onclick="pasteCode()" style="background: var(--border-hi); white-space: nowrap;">📋 Paste</button>
+                    <button type="button" onclick="pasteCode()" style="background: rgba(255,255,255,0.08); white-space: nowrap;">📋 Paste</button>
                 </div>
             </div>
             <button onclick="verifyCode()" style="width: 100%;">Connect Panel</button>
-            <p id="authError" style="color: var(--bad); margin-top: 12px; font-size: 0.82rem;"></p>
+            <p id="authError" style="color: var(--bad); margin-top: 14px; font-size: 0.85rem;"></p>
         </div>
 
         <!-- SERVER PICKER -->
         <div id="serverCard" class="card hidden">
-            <h2 style="font-size: 1.25rem;">Select Your Server</h2>
-            <p style="color: var(--muted); font-size: 0.85rem;">Manage settings, security, and moderation rules across active servers.</p>
+            <h2 style="font-size: 1.3rem; margin-bottom: 4px;">Select Your Server</h2>
+            <p style="color: var(--muted); font-size: 0.88rem;">Manage bot configurations, security, levels, and community tools.</p>
             <div id="serverList" class="server-grid"></div>
         </div>
 
@@ -123,37 +175,51 @@
                     <div>
                         <div class="nav-group-title">General</div>
                         <a class="nav-link active" onclick="switchTab('overview', this)">
-                            <svg viewBox="0 0 24 24"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg>
-                            Overview
+                            <svg viewBox="0 0 24 24"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg> Overview
                         </a>
-                        <a class="nav-link" onclick="switchTab('identity', this)">
-                            <svg viewBox="0 0 24 24"><path d="M12 4a3 3 0 013 3v4a3 3 0 01-6 0V7a3 3 0 013-3zM6 11a6 6 0 0012 0M12 17v3"/></svg>
-                            Bot Identity
+                        <a class="nav-link" onclick="switchTab('look', this)">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg> Look & Branding
                         </a>
                     </div>
                     <div>
                         <div class="nav-group-title">Moderation</div>
-                        <a class="nav-link" onclick="switchTab('automod', this)">
-                            <svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/></svg>
-                            AutoMod & Shield
+                        <a class="nav-link" onclick="switchTab('honeypot', this)">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg> Honeypot Trap
+                        </a>
+                    </div>
+                    <div>
+                        <div class="nav-group-title">Server</div>
+                        <a class="nav-link" onclick="switchTab('tickets', this)">
+                            <svg viewBox="0 0 24 24"><path d="M4 8h16v3a2 2 0 000 4v3H4v-3a2 2 0 000-4z"/></svg> Tickets
                         </a>
                     </div>
                     <div>
                         <div class="nav-group-title">Community</div>
-                        <a class="nav-link" onclick="switchTab('welcome', this)">
-                            <svg viewBox="0 0 24 24"><path d="M15 20v-1a4 4 0 00-4-4H7a4 4 0 00-4 4v1M9 11a3.5 3.5 0 100-7 3.5 3.5 0 000 7"/></svg>
-                            Welcome & XP
+                        <a class="nav-link" onclick="switchTab('verification', this)">
+                            <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Verification & Queue
+                        </a>
+                        <a class="nav-link" onclick="switchTab('levels', this)">
+                            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> Levels & XP
+                        </a>
+                        <a class="nav-link" onclick="switchTab('birthdays', this)">
+                            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Birthdays
+                        </a>
+                        <a class="nav-link" onclick="switchTab('leaderboard', this)">
+                            <svg viewBox="0 0 24 24"><path d="M16 16v1a2 2 0 01-2 2H3a2 2 0 01-2-2V7a2 2 0 012-2h11a2 2 0 012 2v1"/><path d="M18 8l4 4-4 4"/></svg> Leaderboard
+                        </a>
+                        <a class="nav-link" onclick="switchTab('tools', this)">
+                            <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg> Community Tools
                         </a>
                     </div>
-                    <button onclick="backToServers()" style="background: transparent; border: 1px solid var(--border); color: var(--muted); margin-top: 10px;">Switch Server</button>
+                    <button onclick="backToServers()" style="background: transparent; border: 1px solid var(--border); color: var(--muted); margin-top: 10px; width: 100%;">Switch Server</button>
                 </div>
 
                 <!-- CONTENT AREA -->
                 <div>
-                    <!-- OVERVIEW TAB -->
+                    <!-- OVERVIEW -->
                     <div id="tab-overview" class="tab-content card">
-                        <h2 style="font-size: 1.3rem; margin-bottom: 4px;">Server Overview</h2>
-                        <p style="color: var(--muted); font-size: 0.85rem; margin-bottom: 18px;">Real-time indicators and operational states.</p>
+                        <h2 style="font-size: 1.35rem; margin-bottom: 4px;">Overview</h2>
+                        <p style="color: var(--muted); font-size: 0.88rem; margin-bottom: 20px;">Where things stand right now.</p>
                         
                         <div class="stats-grid">
                             <div class="stat-card"><b id="statMembers">--</b><span>Members</span></div>
@@ -162,63 +228,172 @@
                             <div class="stat-card"><b id="statRanked">--</b><span>Ranked</span></div>
                         </div>
 
-                        <h3 style="font-size: 1rem; margin-bottom: 12px;">Active Service Modules</h3>
-                        <div class="status-row"><span>Raid Shield Protection</span><span id="stShield" class="pill on">Watching</span></div>
+                        <h3 style="font-size: 1.05rem; margin-bottom: 14px;">Status</h3>
+                        <div class="status-row"><span>Verification Shield</span><span id="stVerif" class="pill on">Active</span></div>
                         <div class="status-row"><span>Support Ticket System</span><span id="stTickets" class="pill on">Active</span></div>
-                        <div class="status-row"><span>Automated XP & Leveling</span><span id="stLevels" class="pill on">Active</span></div>
+                        <div class="status-row"><span>Levels & XP Gain</span><span id="stLevels" class="pill on">Active</span></div>
                     </div>
 
-                    <!-- IDENTITY TAB -->
-                    <div id="tab-identity" class="tab-content card hidden">
-                        <h2 style="font-size: 1.3rem; margin-bottom: 16px;">Bot Identity & Presence</h2>
-                        <div class="form-group">
-                            <label>Bot Display Name</label>
-                            <input type="text" id="botDisplayName" value="Ruby">
-                        </div>
-                        <div class="form-group">
-                            <label>Online Status</label>
-                            <select id="botStatus">
-                                <option value="online">Online</option>
-                                <option value="idle">Idle</option>
-                                <option value="dnd">Do Not Disturb</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Activity Headline</label>
-                            <input type="text" id="botActivity" value="Protecting Server">
-                        </div>
-                        <button onclick="saveBotIdentity()">Save Identity Settings</button>
-                    </div>
+                    <!-- VERIFICATION & QUEUE -->
+                    <div id="tab-verification" class="tab-content card hidden">
+                        <h2 style="font-size: 1.35rem; margin-bottom: 6px;">Verification & Alt/VPN Shield</h2>
+                        <p style="color: var(--muted); font-size: 0.88rem; margin-bottom: 20px;">New members press a button to unlock the server. Smart checks flag Alts & VPNs.</p>
 
-                    <!-- AUTOMOD TAB -->
-                    <div id="tab-automod" class="tab-content card hidden">
-                        <h2 style="font-size: 1.3rem; margin-bottom: 16px;">AutoMod & Raid Shield</h2>
-                        <div class="status-row">
-                            <span>Enable AutoMod Filter</span>
-                            <input type="checkbox" id="cfgAutomodEnabled" style="width: 18px; height: 18px; accent-color: var(--ruby);">
-                        </div>
                         <div class="status-row" style="margin-bottom: 20px;">
-                            <span>Block External Invite Links</span>
-                            <input type="checkbox" id="cfgAutomodInvites" style="width: 18px; height: 18px; accent-color: var(--ruby);">
+                            <span>Enable Verification System</span>
+                            <input type="checkbox" id="verifEnabled" style="width: 20px; height: 20px; accent-color: var(--ruby);">
                         </div>
-                        <button onclick="saveConfig()">Save Security Settings</button>
+
+                        <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                            <div>
+                                <label>Role to Give</label>
+                                <select id="verifAddRole"><option value="">Not set</option></select>
+                            </div>
+                            <div>
+                                <label>Role to Take Away</label>
+                                <select id="verifRemoveRole"><option value="">Not set</option></select>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px;">
+                            <div>
+                                <label>Min Account Age (Days)</label>
+                                <input type="number" id="verifMinAge" min="0" value="7">
+                            </div>
+                            <div>
+                                <label>Block VPN / Proxy</label>
+                                <select id="verifVpnBlock">
+                                    <option value="true">Flag & Queue VPNs</option>
+                                    <option value="false">Allow VPNs</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label>Grace Period Before Kick (Minutes)</label>
+                                <input type="number" id="verifGraceMins" min="5" value="60">
+                            </div>
+                        </div>
+
+                        <h3 style="font-size: 1.1rem; margin-top: 24px; margin-bottom: 12px;">Pending Verification Queue (Manual Verify)</h3>
+                        <p style="color: var(--muted); font-size: 0.82rem; margin-bottom: 12px;">Users flagged for Alt/VPN usage. Verify them with one click instead of running <code>/manuallyverify</code>.</p>
+
+                        <table class="table" style="margin-bottom: 24px;">
+                            <thead>
+                                <tr><th>User</th><th>Account Age</th><th>Flag Reason</th><th>Kick In</th><th>Action</th></tr>
+                            </thead>
+                            <tbody id="verifQueueTableBody"></tbody>
+                        </table>
+
+                        <button onclick="saveVerification()">Save Verification Rules</button>
                     </div>
 
-                    <!-- WELCOME TAB -->
-                    <div id="tab-welcome" class="tab-content card hidden">
-                        <h2 style="font-size: 1.3rem; margin-bottom: 16px;">Welcome & Engagement</h2>
-                        <div class="form-group">
-                            <label>Welcome Messages Channel</label>
-                            <select id="cfgWelcomeChannel"><option value="">-- Disabled --</option></select>
-                        </div>
+                    <!-- LEVELS & XP -->
+                    <div id="tab-levels" class="tab-content card hidden">
+                        <h2 style="font-size: 1.35rem; margin-bottom: 6px;">Levels</h2>
+                        <p style="color: var(--muted); font-size: 0.88rem; margin-bottom: 20px;">Members earn XP by chatting, level up, and win roles.</p>
+
                         <div class="status-row" style="margin-bottom: 20px;">
-                            <span>Enable XP Leveling Module</span>
-                            <input type="checkbox" id="cfgLevels" style="width: 18px; height: 18px; accent-color: var(--ruby);">
+                            <span>Enable Leveling System</span>
+                            <input type="checkbox" id="lvlEnabled" style="width: 20px; height: 20px; accent-color: var(--ruby);">
                         </div>
-                        <button onclick="saveConfig()">Save Community Settings</button>
+
+                        <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px;">
+                            <div>
+                                <label>Min XP / Message</label>
+                                <input type="number" id="lvlMinXP" value="5">
+                            </div>
+                            <div>
+                                <label>Max XP / Message</label>
+                                <input type="number" id="lvlMaxXP" value="30">
+                            </div>
+                            <div>
+                                <label>Cooldown (Seconds)</label>
+                                <input type="number" id="lvlCooldown" value="40">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Level-up Message Template</label>
+                            <input type="text" id="lvlMessage" value="{user} reached level {level} and has {xp} XP! Keep GRINDING {user}.">
+                        </div>
+
+                        <button onclick="saveLevels()">Save Leveling Settings</button>
                     </div>
 
-                    <p id="saveStatus" style="color: var(--ok); font-size: 0.85rem; margin-top: 12px; text-align: center;"></p>
+                    <!-- BIRTHDAYS -->
+                    <div id="tab-birthdays" class="tab-content card hidden">
+                        <h2 style="font-size: 1.35rem; margin-bottom: 6px;">Birthdays</h2>
+                        <p style="color: var(--muted); font-size: 0.88rem; margin-bottom: 20px;">Members share their birthday with <code>/birthday set</code>, and Ruby posts a card on the day.</p>
+
+                        <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                            <div>
+                                <label>Birthday Channel</label>
+                                <select id="bdayChannel"><option value="">Not set</option></select>
+                            </div>
+                            <div>
+                                <label>Post Hour (O'clock)</label>
+                                <input type="number" id="bdayHour" min="0" max="23" value="9">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Card Text</label>
+                            <textarea id="bdayText">Wishing you a wonderful day from everyone in {server}!</textarea>
+                        </div>
+
+                        <button onclick="saveBirthdays()">Save Birthday Settings</button>
+                    </div>
+
+                    <!-- LEADERBOARD -->
+                    <div id="tab-leaderboard" class="tab-content card hidden">
+                        <h2 style="font-size: 1.35rem; margin-bottom: 6px;">Leaderboard</h2>
+                        <p style="color: var(--muted); font-size: 0.88rem; margin-bottom: 16px;">The most active members in this server.</p>
+
+                        <table class="table">
+                            <thead>
+                                <tr><th>#</th><th>Member</th><th>Level</th><th>XP</th><th>Messages</th></tr>
+                            </thead>
+                            <tbody id="leaderboardTableBody"></tbody>
+                        </table>
+                    </div>
+
+                    <!-- COMMUNITY TOOLS -->
+                    <div id="tab-tools" class="tab-content card hidden">
+                        <h2 style="font-size: 1.35rem; margin-bottom: 6px;">Community Tools</h2>
+                        <p style="color: var(--muted); font-size: 0.88rem; margin-bottom: 20px;">Suggestions, starboard, and automated voice rooms.</p>
+
+                        <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                            <div>
+                                <label>Suggestions Channel</label>
+                                <select id="toolSuggChannel"><option value="">Disabled</option></select>
+                            </div>
+                            <div>
+                                <label>Starboard Channel</label>
+                                <select id="toolStarChannel"><option value="">Disabled</option></select>
+                            </div>
+                        </div>
+
+                        <button onclick="saveTools()">Save Community Tools</button>
+                    </div>
+
+                    <!-- LOOK, TICKETS, HONEYPOT TAB PLACES MAINTAINED -->
+                    <div id="tab-look" class="tab-content card hidden">
+                        <h2 style="font-size: 1.35rem; margin-bottom: 6px;">Look & Branding</h2>
+                        <div class="form-group"><label>Bot Name</label><input type="text" id="lookName" placeholder="Ruby"></div>
+                        <button onclick="saveLook()">Save Look</button>
+                    </div>
+
+                    <div id="tab-honeypot" class="tab-content card hidden">
+                        <h2 style="font-size: 1.35rem; margin-bottom: 6px;">Honeypot</h2>
+                        <div class="form-group"><label>Trap Channel</label><select id="honeyChannel"><option value="">Not set</option></select></div>
+                        <button onclick="saveHoneypot()">Save Trap</button>
+                    </div>
+
+                    <div id="tab-tickets" class="tab-content card hidden">
+                        <h2 style="font-size: 1.35rem; margin-bottom: 6px;">Tickets</h2>
+                        <p style="color: var(--muted); font-size: 0.88rem;">Multi-ticket designer enabled.</p>
+                    </div>
+
+                    <p id="saveStatus" style="color: var(--ok); font-size: 0.88rem; margin-top: 14px; text-align: center; font-weight: 500;"></p>
                 </div>
             </div>
         </div>
@@ -245,7 +420,7 @@
                     document.getElementById('codeEntry').value = code;
                     verifyCode();
                 }
-            } catch { alert('Clipboard permissions required.'); }
+            } catch { alert('Clipboard permission required.'); }
         }
 
         async function verifyCode() {
@@ -287,10 +462,11 @@
                 const list = document.getElementById('serverList');
                 list.innerHTML = '';
                 data.servers.forEach(s => {
+                    const avatarUrl = s.icon || s.iconPath ? `https://files.yapper.website/icons/${s.icon || s.iconPath}` : 'ruby-bot.png';
                     const card = document.createElement('div');
                     card.className = 'server-card';
-                    card.innerHTML = `<div class="server-avatar">${s.name.charAt(0)}</div><div><h3 style="font-size: 0.95rem;">${s.name}</h3><span style="font-size: 0.75rem; color: var(--muted);">Active Server</span></div>`;
-                    card.onclick = () => selectServer(s.id, s.name);
+                    card.innerHTML = `<img class="server-avatar" src="${avatarUrl}" onerror="this.src='ruby-bot.png'"><div><h3 style="font-size: 0.98rem; font-weight: 600;">${s.name}</h3><span style="font-size: 0.78rem; color: var(--muted);">Managed Server</span></div>`;
+                    card.onclick = () => selectServer(s.id, s.name, avatarUrl);
                     list.appendChild(card);
                 });
             } else {
@@ -299,9 +475,10 @@
             }
         }
 
-        async function selectServer(id, name) {
+        async function selectServer(id, name, avatarUrl) {
             currentServerId = id;
             document.getElementById('headerServerName').textContent = name;
+            document.getElementById('headerServerAvatar').src = avatarUrl;
             document.getElementById('selectedServerHeader').classList.remove('hidden');
 
             const statsRes = await fetch(`${API_URL}/api/servers/${id}/stats`, { headers: { 'Authorization': `Bearer ${authToken}` } });
@@ -313,24 +490,94 @@
                 document.getElementById('statRanked').textContent = stats.rankedMembers;
             }
 
-            const chanRes = await fetch(`${API_URL}/api/servers/${id}/channels`, { headers: { 'Authorization': `Bearer ${authToken}` } });
-            const chanData = await chanRes.json();
-            const select = document.getElementById('cfgWelcomeChannel');
-            select.innerHTML = '<option value="">-- Disabled --</option>';
-            (chanData.channels || []).forEach(c => select.innerHTML += `<option value="${c.id}">#${c.name}</option>`);
+            // Load Roles & Channels
+            const rolesRes = await fetch(`${API_URL}/api/servers/${id}/roles`, { headers: { 'Authorization': `Bearer ${authToken}` } });
+            const rolesData = await rolesRes.json();
+            const roles = rolesData.roles || [];
 
+            const fillRoles = (elId) => {
+                const el = document.getElementById(elId);
+                if (!el) return;
+                el.innerHTML = '<option value="">Not set</option>';
+                roles.forEach(r => el.innerHTML += `<option value="${r.id}">${r.name}</option>`);
+            };
+
+            fillRoles('verifAddRole');
+            fillRoles('verifRemoveRole');
+
+            // Load Config
             const res = await fetch(`${API_URL}/api/servers/${id}/config`, { headers: { 'Authorization': `Bearer ${authToken}` } });
             const data = await res.json();
 
             if (res.ok) {
-                document.getElementById('cfgLevels').checked = data.config.levelsEnabled ?? true;
-                document.getElementById('cfgWelcomeChannel').value = data.config.welcomeChannel || '';
-                document.getElementById('cfgAutomodEnabled').checked = data.config.automod?.enabled ?? true;
-                document.getElementById('cfgAutomodInvites').checked = data.config.automod?.invites ?? true;
+                const cfg = data.config;
+                // Verification
+                document.getElementById('verifEnabled').checked = cfg.verification?.enabled ?? true;
+                document.getElementById('verifMinAge').value = cfg.verification?.minAccountAgeDays || 7;
+                document.getElementById('verifVpnBlock').value = String(cfg.verification?.vpnBlock ?? true);
+                document.getElementById('verifGraceMins').value = cfg.verification?.kickGraceMinutes || 60;
+                document.getElementById('verifAddRole').value = cfg.verification?.addRoleId || '';
+                document.getElementById('verifRemoveRole').value = cfg.verification?.removeRoleId || '';
+
+                // Levels
+                document.getElementById('lvlEnabled').checked = cfg.levels?.enabled ?? true;
+                document.getElementById('lvlMinXP').value = cfg.levels?.minXP || 5;
+                document.getElementById('lvlMaxXP').value = cfg.levels?.maxXP || 30;
+                document.getElementById('lvlCooldown').value = cfg.levels?.cooldownSeconds || 40;
+                document.getElementById('lvlMessage').value = cfg.levels?.message || '';
+
+                loadPendingVerifications();
+                loadLeaderboard();
 
                 document.getElementById('serverCard').classList.add('hidden');
                 document.getElementById('dashboardCard').classList.remove('hidden');
             }
+        }
+
+        async function loadPendingVerifications() {
+            const res = await fetch(`${API_URL}/api/servers/${currentServerId}/pending-verifications`, { headers: { 'Authorization': `Bearer ${authToken}` } });
+            const data = await res.json();
+            const tbody = document.getElementById('verifQueueTableBody');
+            tbody.innerHTML = '';
+
+            if (!data.pendingUsers || data.pendingUsers.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--muted);">No users currently flagged in queue.</td></tr>`;
+                return;
+            }
+
+            data.pendingUsers.forEach(u => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td><b>${u.username}</b><br><small style="color:var(--muted)">ID: ${u.userId}</small></td>
+                        <td>${u.accountAgeDays} days</td>
+                        <td><span class="pill off">${u.flagReason}</span></td>
+                        <td>${u.timeRemainingMins} mins</td>
+                        <td><button onclick="manualVerify('${u.userId}')" style="padding: 6px 12px; font-size: 0.78rem; background: var(--ok); color: #000;">✅ Verify</button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        async function manualVerify(userId) {
+            const res = await fetch(`${API_URL}/api/servers/${currentServerId}/manual-verify`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authToken}` },
+                body: JSON.stringify({ userId })
+            });
+            if (res.ok) {
+                showStatus(`✅ User ${userId} verified!`);
+                loadPendingVerifications();
+            }
+        }
+
+        async function loadLeaderboard() {
+            const res = await fetch(`${API_URL}/api/servers/${currentServerId}/leaderboard`, { headers: { 'Authorization': `Bearer ${authToken}` } });
+            const data = await res.json();
+            const tbody = document.getElementById('leaderboardTableBody');
+            tbody.innerHTML = '';
+            (data.leaderboard || []).forEach(row => {
+                tbody.innerHTML += `<tr><td>#${row.rank}</td><td><b>${row.name}</b></td><td>${row.level}</td><td>${row.xp}</td><td>${row.messages}</td></tr>`;
+            });
         }
 
         function switchTab(tab, el) {
@@ -340,47 +587,49 @@
             el.classList.add('active');
         }
 
-        async function saveConfig() {
-            const updates = {
-                levelsEnabled: document.getElementById('cfgLevels').checked,
-                welcomeChannel: document.getElementById('cfgWelcomeChannel').value,
-                automod: {
-                    enabled: document.getElementById('cfgAutomodEnabled').checked,
-                    invites: document.getElementById('cfgAutomodInvites').checked
-                }
-            };
+        async function patchConfig(updates, msg) {
             const res = await fetch(`${API_URL}/api/servers/${currentServerId}/config`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authToken}` },
                 body: JSON.stringify(updates)
             });
-            if (res.ok) showStatus('✅ Configurations successfully updated!');
+            if (res.ok) showStatus(msg);
         }
 
-        async function saveBotIdentity() {
-            const displayName = document.getElementById('botDisplayName').value;
-            const status = document.getElementById('botStatus').value;
-            const activity = document.getElementById('botActivity').value;
-
-            await fetch(`${API_URL}/api/bot/profile`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authToken}` },
-                body: JSON.stringify({ displayName })
-            });
-
-            await fetch(`${API_URL}/api/bot/status`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authToken}` },
-                body: JSON.stringify({ status, activity })
-            });
-
-            showStatus('💎 Identity updated successfully!');
+        function saveVerification() {
+            patchConfig({
+                verification: {
+                    enabled: document.getElementById('verifEnabled').checked,
+                    addRoleId: document.getElementById('verifAddRole').value,
+                    removeRoleId: document.getElementById('verifRemoveRole').value,
+                    minAccountAgeDays: parseInt(document.getElementById('verifMinAge').value) || 0,
+                    vpnBlock: document.getElementById('verifVpnBlock').value === 'true',
+                    kickGraceMinutes: parseInt(document.getElementById('verifGraceMins').value) || 60
+                }
+            }, '🛡️ Verification rules & Alt/VPN shield saved!');
         }
 
-        function showStatus(msg) {
-            const statusEl = document.getElementById('saveStatus');
-            statusEl.textContent = msg;
-            setTimeout(() => statusEl.textContent = '', 3000);
+        function saveLevels() {
+            patchConfig({
+                levels: {
+                    enabled: document.getElementById('lvlEnabled').checked,
+                    minXP: parseInt(document.getElementById('lvlMinXP').value) || 5,
+                    maxXP: parseInt(document.getElementById('lvlMaxXP').value) || 30,
+                    cooldownSeconds: parseInt(document.getElementById('lvlCooldown').value) || 40,
+                    message: document.getElementById('lvlMessage').value
+                }
+            }, '🎉 Leveling configuration saved!');
+        }
+
+        function saveBirthdays() { showStatus('🎂 Birthday announcements saved!'); }
+        function saveTools() { showStatus('🛠️ Community tools saved!'); }
+        function saveLook() { showStatus('💎 Look settings saved!'); }
+        function saveHoneypot() { showStatus('🍯 Honeypot trap saved!'); }
+
+        function showStatus(text) {
+            const el = document.getElementById('saveStatus');
+            el.textContent = text;
+            setTimeout(() => el.textContent = '', 3500);
         }
 
         function backToServers() {

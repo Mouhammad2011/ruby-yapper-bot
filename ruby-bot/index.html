@@ -3,24 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ruby • Yapin' Server Control Center</title>
+    <title>Ruby • Yapin' Community Control Center</title>
     <link rel="icon" type="image/png" href="ruby-bot.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #030305;
-            --surface: rgba(14, 14, 18, 0.7);
-            --surface-hover: rgba(22, 22, 28, 0.8);
-            --surface-card: rgba(10, 10, 14, 0.65);
-            --border: rgba(255, 255, 255, 0.1);
-            --border-hi: rgba(255, 255, 255, 0.22);
-            --border-focus: rgba(225, 29, 72, 0.6);
-            --text: #f5f5f7;
-            --muted: #94949d;
+            --bg: #0b0c10;
+            --surface: #121318;
+            --surface-hover: #1a1b22;
+            --surface-card: #14151b;
+            --border: #232530;
+            --border-hi: #3a3d50;
+            --border-focus: #e11d48;
+            --text: #f1f1f3;
+            --muted: #8b8d9b;
             --accent: #e11d48;
             --accent-hover: #f43f5e;
-            --ok: #30d158;
-            --bad: #ff453a;
+            --ok: #22c55e;
+            --bad: #ef4444;
             --font: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
@@ -43,7 +43,7 @@
             content: '';
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(3, 3, 5, 0.52);
+            background: rgba(11, 12, 16, 0.88);
             z-index: -1;
             pointer-events: none;
         }
@@ -55,31 +55,28 @@
             align-items: center; 
             padding: 16px 36px; 
             border-bottom: 1px solid var(--border); 
-            background: rgba(8, 8, 12, 0.78); 
-            backdrop-filter: blur(28px); 
-            -webkit-backdrop-filter: blur(28px);
+            background: rgba(14, 15, 20, 0.95); 
             position: sticky; 
             top: 0; 
             z-index: 100; 
         }
         .brand { display: flex; align-items: center; gap: 14px; }
-        .brand img { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border-hi); box-shadow: 0 0 15px rgba(225, 29, 72, 0.3); }
+        .brand img { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border-hi); }
         .brand h1 { font-size: 1.15rem; font-weight: 700; background: linear-gradient(135deg, #ffffff, #fb7185); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        .header-pill { display: flex; align-items: center; gap: 10px; background: rgba(255, 255, 255, 0.05); padding: 6px 14px; border-radius: 999px; border: 1px solid var(--border); backdrop-filter: blur(12px); }
+        .header-pill { display: flex; align-items: center; gap: 10px; background: var(--surface); padding: 6px 14px; border-radius: 999px; border: 1px solid var(--border); }
         .header-pill img { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; }
+        .session-pill { background: rgba(34, 197, 94, 0.1); border-color: rgba(34, 197, 94, 0.3); color: var(--ok); font-size: 0.8rem; font-weight: 600; }
 
         .container { max-width: 1240px; margin: 36px auto; padding: 0 24px; width: 100%; flex: 1; }
         
-        /* Glass Cards */
+        /* Solid Cards (Reduced transparency/glass) */
         .card { 
             background-color: var(--surface-card); 
-            backdrop-filter: blur(24px); 
-            -webkit-backdrop-filter: blur(24px);
             border: 1px solid var(--border); 
-            border-radius: 20px; 
+            border-radius: 16px; 
             padding: 32px; 
-            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7), inset 0 1px 1px rgba(255, 255, 255, 0.12); 
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); 
             margin-bottom: 24px; 
         }
 
@@ -94,20 +91,20 @@
             align-items: center; 
             gap: 12px; 
             padding: 10px 14px; 
-            border-radius: 12px; 
+            border-radius: 10px; 
             color: var(--muted); 
             font-size: 0.88rem; 
             font-weight: 500;
             text-decoration: none; 
             cursor: pointer; 
-            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); 
+            transition: all 0.2s ease; 
         }
-        .nav-link:hover { background: rgba(255, 255, 255, 0.08); color: var(--text); }
-        .nav-link.active { background: rgba(225, 29, 72, 0.2); color: #fff; border: 1px solid rgba(225, 29, 72, 0.45); font-weight: 600; box-shadow: 0 4px 18px rgba(225, 29, 72, 0.25); }
+        .nav-link:hover { background: var(--surface-hover); color: var(--text); }
+        .nav-link.active { background: rgba(225, 29, 72, 0.15); color: #fff; border: 1px solid rgba(225, 29, 72, 0.4); font-weight: 600; }
 
         /* Stats Grid */
         .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
-        .stat-card { background: rgba(0, 0, 0, 0.4); border: 1px solid var(--border); border-radius: 16px; padding: 20px; backdrop-filter: blur(12px); }
+        .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
         .stat-card b { font-size: 1.75rem; font-weight: 700; display: block; color: var(--text); letter-spacing: -0.02em; }
         .stat-card span { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
 
@@ -117,16 +114,15 @@
         input[type="text"], input[type="number"], select, textarea { 
             width: 100%; 
             padding: 12px 16px; 
-            background: rgba(0, 0, 0, 0.5); 
+            background: var(--surface); 
             border: 1px solid var(--border); 
-            border-radius: 12px; 
+            border-radius: 10px; 
             color: var(--text); 
             font-size: 0.92rem; 
             outline: none; 
             transition: all 0.2s ease; 
-            backdrop-filter: blur(12px);
         }
-        input:focus, select:focus, textarea:focus { border-color: var(--border-focus); background: rgba(0, 0, 0, 0.7); box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.2); }
+        input:focus, select:focus, textarea:focus { border-color: var(--border-focus); background: #161821; }
         textarea { min-height: 100px; resize: vertical; }
 
         /* CUSTOM ANIMATED TOGGLE SWITCH */
@@ -141,10 +137,10 @@
             position: absolute;
             cursor: pointer;
             top: 0; left: 0; right: 0; bottom: 0;
-            background-color: rgba(255, 255, 255, 0.12);
-            border: 1px solid var(--border);
+            background-color: var(--border);
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             border-radius: 999px;
+            border: 1px solid var(--border-hi);
         }
         .slider:before {
             position: absolute;
@@ -156,16 +152,15 @@
             background-color: #ffffff;
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             border-radius: 50%;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
         input:checked + .slider {
             background-color: var(--accent);
-            border-color: rgba(244, 63, 94, 0.6);
-            box-shadow: 0 0 16px rgba(225, 29, 72, 0.4);
+            border-color: var(--accent);
+            box-shadow: 0 0 12px rgba(225, 29, 72, 0.4);
         }
         input:checked + .slider:before {
             transform: translateX(24px);
-            background-color: #ffffff;
         }
 
         /* Buttons */
@@ -174,30 +169,30 @@
             color: white; 
             border: none; 
             padding: 12px 24px; 
-            border-radius: 12px; 
+            border-radius: 10px; 
             font-weight: 600; 
             cursor: pointer; 
-            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); 
+            transition: all 0.2s ease; 
             font-size: 0.9rem; 
-            box-shadow: 0 4px 20px rgba(225, 29, 72, 0.35); 
+            box-shadow: 0 4px 15px rgba(225, 29, 72, 0.3); 
         }
-        button:hover { transform: translateY(-1px); box-shadow: 0 6px 25px rgba(225, 29, 72, 0.5); }
+        button:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(225, 29, 72, 0.4); }
 
-        .status-row { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; background: rgba(0, 0, 0, 0.4); border-radius: 14px; margin-bottom: 12px; border: 1px solid var(--border); }
+        .status-row { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; background: var(--surface); border-radius: 10px; margin-bottom: 12px; border: 1px solid var(--border); }
         .pill { padding: 4px 12px; border-radius: 999px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
-        .pill.on { background: rgba(48, 209, 88, 0.15); color: var(--ok); border: 1px solid rgba(48, 209, 88, 0.3); }
-        .pill.off { background: rgba(225, 29, 72, 0.15); color: var(--bad); border: 1px solid rgba(225, 29, 72, 0.3); }
+        .pill.on { background: rgba(34, 197, 94, 0.15); color: var(--ok); border: 1px solid rgba(34, 197, 94, 0.3); }
+        .pill.off { background: rgba(239, 68, 68, 0.15); color: var(--bad); border: 1px solid rgba(239, 68, 68, 0.3); }
 
         .hidden { display: none !important; }
         
         .server-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px; margin-top: 20px; }
-        .server-card { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 20px; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; gap: 16px; backdrop-filter: blur(20px); }
+        .server-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; gap: 16px; }
         .server-card:hover { border-color: var(--accent); transform: translateY(-2px); background: var(--surface-hover); }
-        .server-avatar { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; font-weight: 600; color: #fff; border: 1px solid var(--border); }
+        .server-avatar { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; background: var(--border); display: flex; align-items: center; justify-content: center; font-weight: 600; color: #fff; border: 1px solid var(--border-hi); }
 
-        .table { width: 100%; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; border-collapse: collapse; margin-top: 12px; }
-        .table th { text-align: left; padding: 14px 18px; background: rgba(0, 0, 0, 0.5); color: var(--muted); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border); }
-        .table td { padding: 14px 18px; border-bottom: 1px solid var(--border); font-size: 0.88rem; background: rgba(0, 0, 0, 0.3); }
+        .table { width: 100%; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; border-collapse: collapse; margin-top: 12px; }
+        .table th { text-align: left; padding: 14px 18px; background: var(--surface); color: var(--muted); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border); }
+        .table td { padding: 14px 18px; border-bottom: 1px solid var(--border); font-size: 0.88rem; background: #111217; }
     </style>
 </head>
 <body>
@@ -205,12 +200,15 @@
     <header>
         <div class="brand">
             <img id="headerBotLogo" src="ruby-bot.png" alt="Logo">
-            <h1>Ruby • Yapin' Server Control Center</h1>
+            <h1>Ruby • Yapin' Community Control Center</h1>
         </div>
-        <div style="display: flex; gap: 14px; align-items: center;">
+        <div style="display: flex; gap: 12px; align-items: center;">
+            <div id="sessionPillHeader" class="header-pill session-pill hidden">
+                <span id="sessionCountdownText">Logged in for 7 days</span>
+            </div>
             <div id="selectedServerHeader" class="header-pill hidden">
                 <img id="headerServerAvatar" src="" alt="">
-                <span id="headerServerName" style="font-size: 0.84rem; font-weight: 500;">Yapin' Server</span>
+                <span id="headerServerName" style="font-size: 0.84rem; font-weight: 500;">Yapin' Community</span>
             </div>
             <div id="userHeader" class="header-pill hidden">
                 <img id="userAvatar" src="" alt="User">
@@ -226,25 +224,25 @@
                 <img src="ruby-bot.png" alt="Ruby Logo" style="width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--border-hi);">
                 <div>
                     <h2 style="font-size: 1.4rem; font-weight: 700;">Sign In</h2>
-                    <p style="color: var(--muted); font-size: 0.82rem;">Yapin' Server Authentication</p>
+                    <p style="color: var(--muted); font-size: 0.82rem;">Yapin' Community Authentication</p>
                 </div>
             </div>
             <p style="color: var(--muted); font-size: 0.88rem; margin-bottom: 24px;">Enter the 6-character alphanumeric passcode sent via <code>/login</code> in your DMs.</p>
             <div class="form-group">
                 <label>Security Passcode (Letters & Numbers)</label>
                 <div style="display: flex; gap: 10px;">
-                    <input type="text" id="codeEntry" placeholder="ABC123" maxlength="6" style="letter-spacing: 0.25em; font-weight: 700; text-align: center; text-transform: uppercase;">
-                    <button type="button" onclick="pasteCode()" style="background: rgba(255,255,255,0.08); color: var(--text); border: 1px solid var(--border); box-shadow: none;">📋 Paste</button>
+                    <input type="text" id="codeEntry" placeholder="A8K9Z2" maxlength="6" style="letter-spacing: 0.25em; font-weight: 700; text-align: center; text-transform: uppercase;">
+                    <button type="button" onclick="pasteCode()" style="background: var(--surface); color: var(--text); border: 1px solid var(--border); box-shadow: none;">📋 Paste</button>
                 </div>
             </div>
             <button onclick="verifyCode()" style="width: 100%; margin-top: 8px;">Authenticate</button>
             <p id="authError" style="color: var(--bad); margin-top: 14px; font-size: 0.84rem; text-align: center;"></p>
         </div>
 
-        <!-- SERVER PICKER -->
+        <!-- COMMUNITY PICKER -->
         <div id="serverCard" class="card hidden">
             <h2 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 6px;">Select Yapin' Workspace</h2>
-            <p style="color: var(--muted); font-size: 0.88rem;">Choose a Yapin' Server to configure and manage.</p>
+            <p style="color: var(--muted); font-size: 0.88rem;">Choose a Yapin' Community to configure and manage.</p>
             <div id="serverList" class="server-grid"></div>
         </div>
 
@@ -278,7 +276,7 @@
                         <a class="nav-link" onclick="switchTab('leaderboard', this)">Leaderboard</a>
                         <a class="nav-link" onclick="switchTab('tools', this)">Community Tools</a>
                     </div>
-                    <button onclick="backToServers()" style="background: rgba(0,0,0,0.3); border: 1px solid var(--border); color: var(--muted); margin-top: 10px; width: 100%; box-shadow: none;">Switch Server</button>
+                    <button onclick="backToServers()" style="background: var(--surface); border: 1px solid var(--border); color: var(--muted); margin-top: 10px; width: 100%; box-shadow: none;">Switch Community</button>
                 </div>
 
                 <div>
@@ -287,8 +285,8 @@
                         <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 20px;">
                             <img src="ruby-bot.png" alt="Logo" style="width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--border-hi);">
                             <div>
-                                <h2 style="font-size: 1.3rem; font-weight: 700;">Yapin' Server Overview</h2>
-                                <p style="color: var(--muted); font-size: 0.84rem;">Real-time Yapin' Server telemetry & core system operational status.</p>
+                                <h2 style="font-size: 1.3rem; font-weight: 700;">Yapin' Community Overview</h2>
+                                <p style="color: var(--muted); font-size: 0.84rem;">Real-time Yapin' Community telemetry & core system operational status.</p>
                             </div>
                         </div>
                         <div class="stats-grid">
@@ -305,7 +303,7 @@
                     <!-- PERMISSIONS -->
                     <div id="tab-permissions" class="tab-content card hidden">
                         <h2 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 4px;">Permissions</h2>
-                        <p style="color: var(--muted); font-size: 0.88rem; margin-bottom: 24px;">Staff roles and primary log destinations for Yapin' Server.</p>
+                        <p style="color: var(--muted); font-size: 0.88rem; margin-bottom: 24px;">Staff roles and primary log destinations for Yapin' Community.</p>
                         <div class="form-group">
                             <label>Log Channel</label>
                             <select id="permLogChannel"><option value="">Not set</option></select>
@@ -331,7 +329,7 @@
                         </div>
                         <div class="form-group">
                             <label>Panel Theme Accent / Color Filter</label>
-                            <input type="color" id="lookColor" value="#e11d48" style="height: 44px; padding: 4px; cursor: pointer;">
+                            <input type="color" id="lookColor" value="#e11d48" style="height: 44px; padding: 4px; cursor: pointer; background: var(--surface);">
                         </div>
                         <button onclick="saveLook()">Save Customization</button>
                     </div>
@@ -339,7 +337,7 @@
                     <!-- RAID SHIELD & SECURITY -->
                     <div id="tab-moderation" class="tab-content card hidden">
                         <h2 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 4px;">Raid Shield & Security</h2>
-                        <p style="color: var(--muted); font-size: 0.88rem; margin-bottom: 24px;">Advanced anti-raid shielding and alert destinations for Yapin' Server.</p>
+                        <p style="color: var(--muted); font-size: 0.88rem; margin-bottom: 24px;">Advanced anti-raid shielding and alert destinations for Yapin' Community.</p>
                         
                         <div class="status-row" style="margin-bottom: 20px;">
                             <span>Active Raid Shield Switch</span>
@@ -394,7 +392,7 @@
                     <!-- CASES LOG -->
                     <div id="tab-cases" class="tab-content card hidden">
                         <h2 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 4px;">Cases Log</h2>
-                        <p style="color: var(--muted); font-size: 0.88rem; margin-bottom: 16px;">Archived moderation actions on Yapin' Server.</p>
+                        <p style="color: var(--muted); font-size: 0.88rem; margin-bottom: 16px;">Archived moderation actions on Yapin' Community.</p>
                         <table class="table">
                             <thead><tr><th>Case</th><th>Type</th><th>Member</th><th>Moderator</th><th>Reason</th><th>Time</th></tr></thead>
                             <tbody id="casesTableBody"></tbody>
@@ -406,7 +404,7 @@
                         <h2 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 4px;">Tickets Panels Builder</h2>
                         <p style="color: var(--muted); font-size: 0.88rem; margin-bottom: 24px;">Add multiple ticket panels with customized buttons and target channels.</p>
                         <div id="ticketPanelsContainer"></div>
-                        <button type="button" onclick="addTicketPanel()" style="background: rgba(255,255,255,0.08); border: 1px dashed var(--border); color: var(--text); width: 100%; margin-bottom: 20px; box-shadow: none;">+ Add Ticket Panel</button>
+                        <button type="button" onclick="addTicketPanel()" style="background: var(--surface); border: 1px dashed var(--border); color: var(--text); width: 100%; margin-bottom: 20px; box-shadow: none;">+ Add Ticket Panel</button>
                         <button onclick="saveTickets()">Save Ticket Panels</button>
                     </div>
 
@@ -431,7 +429,7 @@
                         </div>
                         <div class="form-group">
                             <label>Welcome Message (+1 Count Offset)</label>
-                            <textarea id="welcText">Welcome to {server}, {user}! You are member #{count}.</textarea>
+                            <textarea id="welcText">Welcome to {community}, {user}! You are member #{count}.</textarea>
                         </div>
                         <div class="form-group">
                             <label>Goodbye Channel</label>
@@ -439,7 +437,7 @@
                         </div>
                         <div class="form-group">
                             <label>Goodbye Message (-1 Count Offset)</label>
-                            <textarea id="goodText">{name} has left the server. We are now {count} members.</textarea>
+                            <textarea id="goodText">{name} has left the community. We are now {count} members.</textarea>
                         </div>
                         <button onclick="saveWelcome()">Save Greet Settings</button>
                     </div>
@@ -447,7 +445,7 @@
                     <!-- VERIFICATION -->
                     <div id="tab-verification" class="tab-content card hidden">
                         <h2 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 4px;">Verification & Alts</h2>
-                        <p style="color: var(--muted); font-size: 0.88rem; margin-bottom: 24px;">VPN/Alt detection with live server member avatars & manual queue.</p>
+                        <p style="color: var(--muted); font-size: 0.88rem; margin-bottom: 24px;">VPN/Alt detection with live community member avatars & manual queue.</p>
                         
                         <div class="status-row" style="margin-bottom: 20px;">
                             <span>Verification Switch</span>
@@ -515,7 +513,7 @@
                     <!-- LEADERBOARD -->
                     <div id="tab-leaderboard" class="tab-content card hidden">
                         <h2 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 4px;">Leaderboard</h2>
-                        <p style="color: var(--muted); font-size: 0.88rem; margin-bottom: 16px;">Top active members on Yapin' Server.</p>
+                        <p style="color: var(--muted); font-size: 0.88rem; margin-bottom: 16px;">Top active members on Yapin' Community.</p>
                         <table class="table">
                             <thead><tr><th>Rank</th><th>Member</th><th>Level</th><th>XP</th><th>Messages</th></tr></thead>
                             <tbody id="leaderboardTableBody"></tbody>
@@ -540,10 +538,52 @@
     <script>
         const API_URL = '';
         let authToken = localStorage.getItem('ruby_token');
+        let sessionExpiryTime = localStorage.getItem('ruby_session_expiry');
         let currentServerId = null;
         let ticketPanelsData = [];
+        let countdownTimer = null;
 
-        if (authToken) initApp();
+        if (authToken) {
+            if (!sessionExpiryTime) {
+                sessionExpiryTime = Date.now() + (7 * 24 * 60 * 60 * 1000);
+                localStorage.setItem('ruby_session_expiry', sessionExpiryTime);
+            }
+            startSessionCountdown();
+            initApp();
+        }
+
+        function startSessionCountdown() {
+            document.getElementById('sessionPillHeader').classList.remove('hidden');
+            
+            function updateTimer() {
+                const now = Date.now();
+                const remainingMs = parseInt(sessionExpiryTime) - now;
+                const el = document.getElementById('sessionCountdownText');
+
+                if (remainingMs <= 0) {
+                    el.textContent = 'Session Expired';
+                    clearInterval(countdownTimer);
+                    localStorage.removeItem('ruby_token');
+                    localStorage.removeItem('ruby_session_expiry');
+                    alert('Your 7-day session has expired. Please log in again using /login.');
+                    location.reload();
+                    return;
+                }
+
+                const days = Math.floor(remainingMs / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((remainingMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+
+                if (days >= 1) {
+                    el.textContent = `You are logged in for ${days} ${days === 1 ? 'day' : 'days'}`;
+                } else {
+                    el.textContent = `You are logged in for ${hours} ${hours === 1 ? 'hour' : 'hours'}`;
+                }
+            }
+
+            updateTimer();
+            if (countdownTimer) clearInterval(countdownTimer);
+            countdownTimer = setInterval(updateTimer, 60000);
+        }
 
         document.getElementById('codeEntry').addEventListener('input', (e) => {
             const v = e.target.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
@@ -569,7 +609,10 @@
             const data = await res.json();
             if (res.ok && data.success) {
                 authToken = data.token;
+                sessionExpiryTime = Date.now() + (7 * 24 * 60 * 60 * 1000);
                 localStorage.setItem('ruby_token', authToken);
+                localStorage.setItem('ruby_session_expiry', sessionExpiryTime);
+                startSessionCountdown();
                 initApp();
             } else {
                 document.getElementById('authError').textContent = data.error || 'Authentication failed.';
@@ -606,6 +649,7 @@
                 });
             } else {
                 localStorage.removeItem('ruby_token');
+                localStorage.removeItem('ruby_session_expiry');
                 document.getElementById('authCard').classList.remove('hidden');
             }
         }
@@ -706,7 +750,7 @@
                 channels.forEach(c => chanOpts += `<option value="${c.id}" ${p.channelId === c.id ? 'selected' : ''}>#${c.name}</option>`);
 
                 container.innerHTML += `
-                    <div class="card" style="margin-bottom: 16px; background: rgba(0,0,0,0.3);">
+                    <div class="card" style="margin-bottom: 16px; background: var(--surface);">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                             <b>Panel #${i+1}</b>
                             <button type="button" onclick="ticketPanelsData.splice(${i},1); renderTicketPanels([]);" style="padding: 4px 10px; font-size: 0.75rem; background: var(--bad); box-shadow: none;">Remove</button>

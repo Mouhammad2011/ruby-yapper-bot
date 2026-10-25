@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0a090b">
+  <meta name="description" content="Browse Ruby's commands for moderation, community tools, games and member activity.">
+  <link rel="icon" type="image/png" href="/ruby-logo.png">
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/site.js" defer></script>
+  <link rel="stylesheet" href="/support.css">
+  <title>Ruby command guide</title>
+</head>
+<body class="commands-page">
+  <header class="site-header">
+    <a class="site-brand" href="/" aria-label="Ruby home">
+      <img src="/ruby-logo.png" alt="" width="42" height="42">
+      <span>Ruby<small>COMMUNITY BOT</small></span>
+    </a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="/#features">What Ruby does</a>
+      <a href="/commands" aria-current="page">Commands</a>
+      <a href="/#communities">Communities</a>
+      <a href="/#about">Made for your server</a>
+    </nav>
+    <a class="support-top-link" href="https://yapin.gg/invite/HfppHe9MyW" target="_blank" rel="noopener noreferrer" aria-label="Ruby support server on Yapin, opens in a new tab">
+      <img class="support-top-mark" src="/ruby-logo.png" alt="">
+      <span class="support-top-label">Support</span><span class="support-top-arrow" aria-hidden="true">↗</span>
+    </a>
+    <a class="button button-small" data-dashboard-link href="/login">Log in <span aria-hidden="true">↗</span></a>
+  </header>
+
+  <main class="command-page-main">
+    <section id="commands" class="command-guide" aria-labelledby="commandGuideTitle">
+      <div class="section-heading">
+        <p class="eyebrow">RUBY · COMMAND GUIDE</p>
+        <h1 id="commandGuideTitle">The commands, all in one place.</h1>
+        <p>Search by name or browse a category to see what Ruby can do in your Yapper server.</p>
+      </div>
+      <div class="command-guide-tools">
+        <label class="command-search-wrap"><span class="sr-only">Search commands</span><input id="commandSearch" type="search" placeholder="Search commands" autocomplete="off"></label>
+        <div id="commandFilters" class="command-filters" aria-label="Filter commands" role="group"></div>
+      </div>
+      <div id="commandCatalog" class="command-catalog" aria-live="polite"><p class="command-guide-message">Loading commands…</p></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <a class="site-brand footer-brand" href="/"><img src="/ruby-logo.png" alt="" width="30" height="30"><span>Ruby</span></a>
+    <span>Made for communities that feel like home.</span>
+    <a href="/" class="back-top">Back to home</a>
+    <a href="#commands" class="back-top">Back to top ↑</a>
+  </footer>
+</body>
+</html>
